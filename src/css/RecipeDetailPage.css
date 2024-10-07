@@ -1,0 +1,214 @@
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #f0d8d1;
+}
+
+.details-picture {
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+}
+
+.details-back, .detail-options {
+    position: absolute;
+    z-index: 2;
+    background-color: #ede2d3;
+    border: 1px solid #542221;
+    top: 20px;
+}
+
+.details-back {
+    left: 23px;
+}
+
+.detail-options {
+    right: 23px;
+}
+
+.detail-options img {
+    transform: rotate(90deg);
+}
+
+.details-img {
+    width: 100%;
+    margin-top: -30px;
+    justify-self: center;
+    border-radius: 0px 0px 20px 20px;
+}
+
+.details {
+    position: relative;
+    margin: -60px 0px 15px 0px;
+    width: 84vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    border-radius: 40px;
+    background-color: #ede2d3;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.details h2 {
+    padding: 5px 0px;
+}
+
+.key-words {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.key-word {
+    width: fit-content;
+    padding: 10px;
+    height: 20px;
+    border-radius: 15px;
+    border: 2px solid #d19989;
+    background-color: #e9ccc4;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.details h3 {
+    margin-bottom: 5px;
+}
+
+.ingredients-container {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    position: relative;
+    scroll-margin-left: 30px;
+    margin-top: 10px;
+    padding: 10px 0px;
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
+}
+
+.ingredients-container::-webkit-scrollbar {
+    display: none;
+}
+
+.ingredients-list {
+    transition: transform 0.3s ease;
+    list-style-type: none;
+    min-width: fit-content;
+    height: 120px;
+    padding: 10px;
+    padding-inline-start: 0px;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.ingredient-item {
+    background-color: #e9ccc4;
+    border: 2px solid #debcb2;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    min-width: 80px;
+    height: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ingredient-item:first-child {
+    margin-left: 5px; /* Pomakni prvi element malo u desno */
+}
+
+.ingredient-img {
+    width: 60px;
+    height: auto;
+}
+
+.ingredient-item span {
+    margin-top: 5px;
+    color: #542221;
+}
+
+.bolder-span {
+    font-weight: 500;
+}
+
+.instructions-list {
+    list-style-type: none;
+    width: 90%;
+    padding-inline-start: 0px;
+}
+
+.list-line {
+    padding: 5px 0px;
+    text-align: justify;
+}
+
+.options-menu {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%); /* Start izvan viewporta */
+    width: 90%;
+    height: 270px;
+    background-color: #ede2d3;
+    border-radius: 20px 20px 0px 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    opacity: 0;
+    transition: transform 0.4s ease, opacity 0.4s ease; /* Animacija otvaranja */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.options-menu.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.options-menu ul {
+    list-style-type: none;
+    padding: 10px;
+    text-align: center;
+    line-height: 35px;
+    font-size: 18px;
+}
+
+.options-menu img {
+    padding-top: 15px;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Tamniji efekt */
+    opacity: 0;
+    transition: opacity 0.3s ease; /* Animacija postepene pojave */
+    z-index: 999; /* Iza izbornika, ali ispred sadržaja */
+    pointer-events: none; /* Neće blokirati klikove dok je zatvoreno */
+  }
+  
+  /* Kada je vidljiv */
+  .menu-overlay.visible {
+    opacity: 1;
+    pointer-events: all; /* Sada blokira klikove na pozadinu */
+  }
