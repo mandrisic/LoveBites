@@ -11,7 +11,7 @@ const CategoryPage = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    recipeStore.fetchRecipes(categoryName);
+    recipeStore.fetchAllRecipes(categoryName);
   }, [categoryName]);
 
   return (
@@ -34,7 +34,7 @@ const CategoryPage = observer(() => {
       </div>
 
       {recipeStore.error && <p>{recipeStore.error}</p>}
-        {!recipeStore.error && <Recipes recipes={recipeStore.recipes} />}
+        {!recipeStore.error && <Recipes />}
 
     </div>
     </>

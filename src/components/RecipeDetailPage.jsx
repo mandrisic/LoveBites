@@ -9,35 +9,69 @@ const RecipeDetailPage = observer(() => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    recipeStore.fetchRecipeDetail(id);
-    window.scrollTo(0, 0);
-  }, [id]);
+  const handleBackToMain = () => {
+    menuStore.closeAll();
+    navigate('/');
+};
 
-  const { recipeDetail } = recipeStore;
+useEffect(() => {
+  const recipeExists = recipeStore.recipeDetail && recipeStore.recipeDetail.idMeal === id;
+if (!recipeExists) {
+    const recipe = recipeStore.recipes.find(recipe => recipe.idMeal === id);
+    if (recipe) {
+        // Provjeri dužinu id-a za odabir ispravne funkcije
+        if (id.length > 8) { // Pretpostavljamo da je ovo Firebase ID
+            recipeStore.fetchFirebaseRecipeDetail(id); // Ovde proslijedi id
+        } else { // Inače, to je MealDB ID
+            recipeStore.fetchRecipeDetail(id);
+        }
+    }
+}
+  window.scrollTo(0, 0);
+}, [id]);
+
+  const recipeDetail = recipeStore.recipeDetail;
+  console.log('Recipe Detail to Render:', recipeDetail);
+  
   if (!recipeDetail) return <p>Loading...</p>;
 
   const ingredientsList = [];
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = recipeDetail[`strIngredient${i}`];
-    const measure = recipeDetail[`strMeasure${i}`];
-    
-    if (ingredient && ingredient.trim() !== '') {
-      ingredientsList.push({
-        ingredient,
-        measure,
-        img: `https://www.themealdb.com/images/ingredients/${ingredient}.png`
-      });
+  if (recipeDetail.ingredients && Array.isArray(recipeDetail.ingredients)) {
+    ingredientsList.push(...recipeDetail.ingredients.map(item => ({
+      ingredient: item.ingredient,
+      measure: item.measure,
+      img: `https://www.themealdb.com/images/ingredients/${item.ingredient}.png`
+    })));
+  } else {
+    // Ako nije array, koristimo MealDB format (strIngredient1-strIngredient20)
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = recipeDetail[`strIngredient${i}`];
+      const measure = recipeDetail[`strMeasure${i}`];
+      
+      if (ingredient && ingredient.trim() !== '') {
+        ingredientsList.push({
+          ingredient,
+          measure,
+          img: `https://www.themealdb.com/images/ingredients/${ingredient}.png`
+        });
+      }
     }
   }
 
-  const hasSteps = recipeDetail.strInstructions.includes('STEP');
-  const instructions = recipeDetail.strInstructions
-    ? recipeDetail.strInstructions.split(/(STEP \d+)/g).filter(step => step.trim() !== '')
-    : [];
+  const hasSteps = recipeDetail.strInstructions 
+  ? recipeDetail.strInstructions.toLowerCase().includes('step') 
+  : false;
 
-  const toggleMenu = () => {
-    menuStore.toggleOptionsContainer();
+  const instructions = recipeDetail.strInstructions 
+  ? recipeDetail.strInstructions.split(/(Step \d+|STEP \d+)/g).filter(step => step.trim() !== '')
+  : [];
+
+    const toggleMenu = () => {
+      menuStore.toggleOptionsContainer();
+  };
+
+  const handleNewRecipe = () => {
+    navigate('/add-recipe');
   };
 
   return (
@@ -74,14 +108,14 @@ const RecipeDetailPage = observer(() => {
           </div>
         </div>
         <h3>Instructions:</h3>
-          {hasSteps ? (
+            {hasSteps ? (
             <ul className='instructions-list'>
               {instructions.map((step, index) => {
                 if (step.includes('STEP')) {
                   const nextStep = instructions[index + 1] || '';
                   return (
                     <li className='list-line' key={index}>
-                      <strong>{step}:</strong> {nextStep.trim()} {/* Spajamo STEP i tekst */}
+                      <strong>{step}:</strong> {nextStep.trim()}
                     </li>
                   );
                 }
@@ -101,10 +135,10 @@ const RecipeDetailPage = observer(() => {
         <div className={`options-menu ${menuStore.isOptionsContainerVisible ? 'visible' : ''}`}>
           <img onClick={toggleMenu} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+klEQVR4nO2X0Q6CIBSGD/YgHuCRgOVc+Sq8Rd1Ur2pj1UrR1INIa3ybmzf8+8Z+8AiQyWQyHZji/GAQjxagADpMS2yMELV7J6doUVZa8Pbx4JUi5dYogZd3TlmRhYzE/TtouZQvw1uXSRayAIWToEgNyVB3uQ9TAk+fwYrjbSKYsiaaFNOcn2PKLJHaTGaOlCezVmdIRdfE8kfbKZ1QZkIqjQwMdyZ+iRfJJJGyIzdwqlKzL0c7+u3syfgl9nZhMyk2Q2YzKfYzH1cbMEKEjC6jGCHq0AGtL/UcY2loic0aI2xHSmJDFjIAu9dwHjrku4wVfhYymcz/cQd9aCL/JJjd5AAAAABJRU5ErkJggg==" />
           <ul>
-            <li>New recipe</li>
+            <li onClick={handleNewRecipe}>New recipe</li>
             <li>Edit recipe</li>
             <li>Delete recipe</li>
-            <li>Back to main page</li>
+            <li onClick={handleBackToMain}>Back to main page</li>
           </ul>
         </div>
       )}

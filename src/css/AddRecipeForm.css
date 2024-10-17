@@ -1,0 +1,50 @@
+.form-container {
+    height: fit-content;
+    width: 100%;
+    padding: 10px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    font-family: 'Fredoka', serif;
+    overflow-y: auto;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    width: 85%;
+    max-height: 2000px;
+    text-align: left;
+}
+
+.select-elements, .ingredients-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.ingredients-container {
+    margin-top: 0;
+    padding: 0;
+}
+
+.fun-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.plus-btn, .minus-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    background-color: #f9f5ef;
+    margin-bottom: 10px;
+}

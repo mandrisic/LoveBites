@@ -1,12 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+import recipeStore from '../stores/RecipeStore';
 import '../css/Recipe.css';
 
-const Recipe = ({ recipe }) => {
+const Recipe = observer(({ recipeId }) => {
   const navigate = useNavigate();
+  const recipe = recipeStore.recipes.find((r) => r.idMeal === recipeId);
 
   const handleClick = () => {
-    navigate(`/recipe/${recipe.idMeal}`);
+    if (recipe) {
+      navigate(`/recipe/${recipe.idMeal}`);
+    }
   };
 
   return (
@@ -15,6 +20,7 @@ const Recipe = ({ recipe }) => {
       <h3>{recipe.strMeal}</h3>
     </div>
   );
-};
+}
+);
 
 export default Recipe;

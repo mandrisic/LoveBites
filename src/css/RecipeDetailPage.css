@@ -20,6 +20,10 @@
     top: 20px;
 }
 
+.back {
+    cursor: pointer;
+}
+
 .details-back {
     left: 23px;
 }
@@ -104,8 +108,9 @@
     list-style-type: none;
     min-width: fit-content;
     height: 120px;
-    padding: 10px;
-    padding-inline-start: 0px;
+    padding: 20px;
+    margin: 10px 10px 0px 10px;
+    padding-inline-start: 5px;
     font-size: 14px;
     display: flex;
     justify-content: flex-start;
@@ -154,7 +159,7 @@
 }
 
 .list-line {
-    padding: 5px 0px;
+    padding: 10px;
     text-align: justify;
 }
 
@@ -188,6 +193,10 @@
     text-align: center;
     line-height: 35px;
     font-size: 18px;
+}
+
+.options-menu ul li {
+    cursor: pointer;
 }
 
 .options-menu img {

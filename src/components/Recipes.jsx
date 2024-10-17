@@ -1,14 +1,16 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
+import recipeStore from '../stores/RecipeStore';
 import Recipe from './Recipe';
 
-const Recipes = ({ recipes }) => {
+const Recipes = observer(() => { 
   return (
     <div className="recipes">
-      {recipes.map((recipe) => (
-        <Recipe key={recipe.idMeal} recipe={recipe} />
-      ))}
+        {recipeStore.recipes.map(recipe => (
+              <Recipe key={recipe.idMeal} recipeId={recipe.idMeal} />
+            ))}
     </div>
   );
-};
+});
 
 export default Recipes;
