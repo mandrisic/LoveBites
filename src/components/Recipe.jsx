@@ -4,14 +4,12 @@ import { observer } from 'mobx-react-lite';
 import recipeStore from '../stores/RecipeStore';
 import '../css/Recipe.css';
 
-const Recipe = observer(({ recipeId }) => {
+const Recipe = observer(({ recipeId, categoryName }) => {
   const navigate = useNavigate();
   const recipe = recipeStore.recipes.find((r) => r.idMeal === recipeId);
 
   const handleClick = () => {
-    if (recipe) {
-      navigate(`/recipe/${recipe.idMeal}`);
-    }
+    navigate(`/category/${categoryName}/recipe/${recipe.idMeal}`);
   };
 
   return (

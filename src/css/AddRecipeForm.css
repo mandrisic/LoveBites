@@ -1,12 +1,13 @@
 .form-container {
-    height: fit-content;
+    height: auto;
     width: 100%;
     padding: 10px;
     margin: auto;
     display: flex;
     justify-content: center;
     font-family: 'Fredoka', serif;
-    overflow-y: auto;
+    overflow: visible;
+    position: relative;
 }
 
 .form-container form {
@@ -18,6 +19,12 @@
     width: 85%;
     max-height: 2000px;
     text-align: left;
+    position: relative;
+}
+
+.closeBtn {
+    position: sticky;
+    margin-top: 10px;
 }
 
 .select-elements, .ingredients-container {
@@ -29,7 +36,7 @@
 }
 
 .ingredients-container {
-    margin-top: 0;
+    margin: 0;
     padding: 0;
 }
 

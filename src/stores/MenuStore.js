@@ -4,15 +4,18 @@ class MenuStore {
     isOptionsContainerVisible = false;
     isFilterContainerVisible = false;
     isSortContainerVisible = false;
+    isDeleteModalVisible = false;
 
     constructor(){
         makeObservable(this, {
             isOptionsContainerVisible: observable,
             isFilterContainerVisible: observable,
             isSortContainerVisible: observable,
+            isDeleteModalVisible: observable,
             toggleOptionsContainer: action,
             toggleFilterContainer: action,
             toggleSortContainer: action,
+            toggleDeleteModal: action,
         });
     }
 
@@ -26,6 +29,10 @@ class MenuStore {
 
     toggleSortContainer(){
         this.isSortContainerVisible = !this.isSortContainerVisible;
+    }
+
+    toggleDeleteModal(){ 
+        this.isDeleteModalVisible = !this.isDeleteModalVisible;
     }
 }
 

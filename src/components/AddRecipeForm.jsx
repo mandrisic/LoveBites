@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import recipeStore from '../stores/RecipeStore';
 import categoryStore from '../stores/CategoryStore'; 
@@ -9,13 +10,14 @@ import '../css/AddRecipeForm.css';
 
 const AddRecipeForm = observer(() => {
     const { newRecipe, addIngredient, updateIngredient, removeIngredient, updateNewRecipe, addRecipe } = recipeStore;
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log('Fetching categories and areas...');
         categoryStore.fetchCategories();
         categoryStore.fetchAreas();
         if (newRecipe.ingredients.length === 0) {
-            addIngredient(); // Dodaje barem jedan prazan sastojak
+            addIngredient();
         }
     }, []);
 
@@ -42,16 +44,14 @@ const AddRecipeForm = observer(() => {
         return ingredient.trim() !== "" && measure.trim() !== "";
       };
       
-      // Provjera unutar handleSubmit:
       const invalidIngredients = newRecipe.ingredients.some(({ ingredient, measure }) => 
           !isValidIngredient(ingredient, measure)
       );
 
     if (invalidIngredients) {
-        alert('Molimo unesite i sastojak i količinu u svim redovima koji su djelomično popunjeni.');
+        alert('All ingredients should also have a written measure.');
         return;
     }
-        
         addRecipe();
     };
 
@@ -70,28 +70,46 @@ const AddRecipeForm = observer(() => {
             alert("Write at least one ingredient.");
         }
     };
-    
+
+    const closeForm = () => {
+        navigate(-1);
+    }
 
     const inputStyle = {
         backgroundColor: '#f9f5ef',
         color: '#542221',
         marginBottom: 2,
         width: '100%',
+            '& .MuiOutlinedInput-root': {
+                '&.Mui-focused fieldset': {
+                    borderColor: '#8B4513',
+                },
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+                color: '#8B4513',
+            },
       }  
 
     return (
         <>
             <div className='form-container'>
                 <form onSubmit={handleSubmit}>
+                <img className='closeBtn' onClick={closeForm} src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA+klEQVR4nO2X0Q6CIBSGD/YgHuCRgOVc+Sq8Rd1Ur2pj1UrR1INIa3ybmzf8+8Z+8AiQyWQyHZji/GAQjxagADpMS2yMELV7J6doUVZa8Pbx4JUi5dYogZd3TlmRhYzE/TtouZQvw1uXSRayAIWToEgNyVB3uQ9TAk+fwYrjbSKYsiaaFNOcn2PKLJHaTGaOlCezVmdIRdfE8kfbKZ1QZkIqjQwMdyZ+iRfJJJGyIzdwqlKzL0c7+u3syfgl9nZhMyk2Q2YzKfYzH1cbMEKEjC6jGCHq0AGtL/UcY2loic0aI2xHSmJDFjIAu9dwHjrku4wVfhYymcz/cQd9aCL/JJjd5AAAAABJRU5ErkJggg==" />
                     <h2>New recipe</h2>
                     <TextField
                         name="name"
                         label="Recipe name"
-                        value={newRecipe.strMeal || ''} // Osiguraj da je uvijek string
+                        value={newRecipe.strMeal || ''}
                         onChange={(e) => updateNewRecipe('strMeal', e.target.value)}
                         required
                         variant="outlined"
                         sx={inputStyle}
+                        InputLabelProps={{
+                            style: { color: '#542221' },
+                          }}
+                          inputProps={{
+                            style: { color: '#542221' },
+                          }}
                     />
                     
                     <TextField
@@ -102,6 +120,12 @@ const AddRecipeForm = observer(() => {
                         required
                         variant="outlined"
                         sx={inputStyle}
+                        InputLabelProps={{
+                            style: { color: '#542221' },
+                          }}
+                          inputProps={{
+                            style: { color: '#542221' },
+                          }}
                     />
 
                     <div className="select-elements">
@@ -113,7 +137,15 @@ const AddRecipeForm = observer(() => {
                             displayEmpty
                             required
                             inputProps={{ 'aria-label': 'Without label' }}
-                            sx={inputStyle}
+                            sx={{
+                                ...inputStyle,
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                  borderColor: '#542221',
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                  borderColor: '#542221',
+                                },
+                              }}
                             MenuProps={{
                                 PaperProps: {
                                     style: {
@@ -140,7 +172,18 @@ const AddRecipeForm = observer(() => {
                                 required
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
-                                sx={inputStyle}
+                                sx={{
+                                    ...inputStyle,
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: '#542221',
+                                    },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: '#542221',
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: '#542221',
+                                    },
+                                  }}
                                 MenuProps={{
                                     PaperProps: {
                                         style: {
@@ -168,6 +211,12 @@ const AddRecipeForm = observer(() => {
                                 onChange={(e) => handleInputChange(index, 'ingredient', e.target.value)}
                                 fullWidth
                                 sx={inputStyle}
+                                InputLabelProps={{
+                                    style: { color: '#542221' },
+                                  }}
+                                  inputProps={{
+                                    style: { color: '#542221' },
+                                  }}
                             />
                             <TextField
                                 label={`Measure ${index + 1}`}
@@ -175,6 +224,9 @@ const AddRecipeForm = observer(() => {
                                 onChange={(e) => handleInputChange(index, 'measure', e.target.value)}
                                 fullWidth
                                 sx={inputStyle}
+                                InputLabelProps={{
+                                    style: { color: '#542221' },
+                                  }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -190,7 +242,6 @@ const AddRecipeForm = observer(() => {
                             />
                         </div>
                     ))}
-
 
                     <div className='plus-btn'>
                         <IconButton 
@@ -212,9 +263,15 @@ const AddRecipeForm = observer(() => {
                         required
                         variant="outlined"
                         sx={inputStyle}
+                        InputLabelProps={{
+                            style: { color: '#542221' },
+                          }}
+                          inputProps={{
+                            style: { color: '#542221' },
+                          }}
                     />
                     
-                    <Button type="submit" 
+                    <Button type="submit" onClick={closeForm} 
                     variant="contained" 
                     sx={{ 
                         backgroundColor: '#542221', 

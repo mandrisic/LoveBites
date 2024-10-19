@@ -1,6 +1,6 @@
 import { makeObservable, observable, action, runInAction } from 'mobx';
 import { db } from '../firebase';
-import { ref, set, get } from 'firebase/database';
+import { ref, set, get, remove } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
 
 class RecipeStore {
@@ -32,6 +32,8 @@ class RecipeStore {
             fetchFirebaseRecipeDetail: action, // also, but from Firebase
             addRecipe: action, // creating a recipe and adding it to the array
             resetNewRecipe: action, // resets the state for new recipe fields
+            editRecipe: action, // edits already created Firebase recipes
+            deleteRecipe: action,
             updateNewRecipe: action,
             addIngredient: action,
             updateIngredient: action,
@@ -50,8 +52,18 @@ class RecipeStore {
                 const data = snapshot.val(); 
                  // convert data objects into arrays, so the array of all recipes
                 const firebaseRecipes = Object.values(data).filter(recipe => recipe.strCategory === categoryName);
-                console.log('Filtered Firebase Recipes:', firebaseRecipes);
-                return firebaseRecipes;
+                const uniqueRecipes = [];
+            const recipeIds = new Set();
+
+            firebaseRecipes.forEach(recipe => {
+                if (!recipeIds.has(recipe.idMeal)) {
+                    recipeIds.add(recipe.idMeal);
+                    uniqueRecipes.push(recipe);
+                }
+            });
+
+            console.log('Filtered Firebase Recipes:', uniqueRecipes);
+            return uniqueRecipes;
             } else {
             console.log('No Firebase recipes found');
                 return [];
@@ -127,11 +139,20 @@ class RecipeStore {
                 console.log('Matching Firebase Recipe Found:', recipe);
                 runInAction(() => {
                     this.recipeDetail = recipe; // Set the found recipe to recipeDetail
+                    this.newRecipe = {
+                        idMeal: recipe.idMeal || '',
+                        strMeal: recipe.strMeal || '',
+                        strMealThumb: recipe.strMealThumb || '',
+                        strCategory: recipe.strCategory || '',
+                        strArea: recipe.strArea || '',
+                        strInstructions: recipe.strInstructions || '',
+                        ingredients: recipe.ingredients || []
+                    };
                 });
             } else {
                 console.log('No matching recipe found in Firebase for ID:', id);
                 runInAction(() => {
-                    this.recipeDetail = null; // Postavi na null ako ne postoji
+                    this.recipeDetail = null;
                 });
             }
         } catch (error) {
@@ -142,12 +163,10 @@ class RecipeStore {
         }
     };
     
-
-
    addRecipe = async () => {
     try {
-        const newRecipeRef = ref(db, 'recipes/' + uuidv4()); // creating a reference for the new recipe
         this.newRecipe.idMeal = uuidv4(); // generating a unique id for the new recipe
+        const newRecipeRef = ref(db, `recipes/${this.newRecipe.idMeal}`); // creating a reference for the new recipe
         const filteredIngredients = this.newRecipe.ingredients.filter(i => i.ingredient.trim() !== '' && i.measure.trim() !== ''); // filter all the ingredients that are not empty
 
         const recipeToAdd = {
@@ -185,11 +204,59 @@ resetNewRecipe = () => {
     };
 }
 
-    updateNewRecipe = (key, value) => {
-        runInAction(() => {
-            this.newRecipe[key] = value;
+editRecipe = async () => {
+    try {
+        if (!this.newRecipe.idMeal) {
+            throw new Error('ID recepta je obavezan za ažuriranje.');
+        }
+
+        const recipeRef = ref(db, `recipes/${this.newRecipe.idMeal}`);
+        const filteredIngredients = this.newRecipe.ingredients.filter(i => i.ingredient.trim() !== '' && i.measure.trim() !== '');
+
+        const updatedRecipe = {
+            ...this.newRecipe,
+            ingredients: filteredIngredients,
+        };
+        await set(recipeRef, updatedRecipe);
+
+      runInAction(() => {
+            const index = this.recipes.findIndex(recipe => recipe.idMeal === this.newRecipe.idMeal);
+            if (index !== -1) {
+                this.recipes[index] = updatedRecipe;
+            } else {
+                console.error('Recipe was not found in the store.');
+            }
         });
+
+        console.log('Recipe succesfully updated', updatedRecipe);
+    } catch (error) {
+        runInAction(() => {
+            this.error = 'Error while updating recipe.';
+        });
+        console.error('Error while updating recipe:', error);
     }
+};
+
+deleteRecipe = async (idMeal) => {
+    try {
+        const recipeRef = ref(db, `recipes/${idMeal}`);
+        await remove(recipeRef);
+
+        runInAction(() => {
+          this.recipes = this.recipes.filter(recipe => recipe.idMeal !== idMeal);
+        });
+
+        console.log(`Recipe with ID: ${idMeal} has been deleted.`);
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+};
+
+updateNewRecipe = (key, value) => {
+    runInAction(() => {
+        this.newRecipe[key] = value;
+    });
+};
 
     addIngredient = () => {
         if (this.newRecipe.ingredients.length < 20) {
@@ -201,15 +268,11 @@ resetNewRecipe = () => {
         }
     }
 
-    // Metoda za ažuriranje sastojka ili mjere na osnovu indeksa i tipa
     updateIngredient = (index, field, value) => {
-        if (!this.newRecipe.ingredients[index]) {
-            this.newRecipe.ingredients[index] = { ingredient: '', measure: '' };
-          }
         runInAction(() => {
             this.newRecipe.ingredients[index][field] = value;
         });
-    }
+    };
 
     removeIngredient = (index) => {
         runInAction(() => {
