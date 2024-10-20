@@ -17,7 +17,7 @@ class CategoryStore {
 
     fetchCategories = async () => {
         try {
-            const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+            const response = await fetch('/api/json/v1/1/categories.php');
             const data = await response.json();
             runInAction(() => {
                 this.categories = data.categories;
@@ -31,7 +31,7 @@ class CategoryStore {
 
     fetchAreas = async () => {
         try {
-            const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list');
+            const response = await fetch('/api/json/v1/1/list.php?a=list');
             const data = await response.json();
             runInAction(() => {
                 this.areas = data.meals;

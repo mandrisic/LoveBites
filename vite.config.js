@@ -1,7 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://www.themealdb.com',
+        changeOrigin: true,
+        // Uklanjanje pathRewrite jer ga ne trebamo mijenjati
+      },
+    },
+  },
+});

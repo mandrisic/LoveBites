@@ -3,19 +3,20 @@ import { observable, makeObservable, action } from "mobx";
 class MenuStore {
     isOptionsContainerVisible = false;
     isFilterContainerVisible = false;
-    isSortContainerVisible = false;
     isDeleteModalVisible = false;
+    isSortMenuOpen = false;
 
     constructor(){
         makeObservable(this, {
             isOptionsContainerVisible: observable,
             isFilterContainerVisible: observable,
-            isSortContainerVisible: observable,
             isDeleteModalVisible: observable,
+            isSortMenuOpen: observable,
             toggleOptionsContainer: action,
             toggleFilterContainer: action,
-            toggleSortContainer: action,
             toggleDeleteModal: action,
+            toggleSortMenu: action,
+            closeSortMenu: action,
         });
     }
 
@@ -27,12 +28,16 @@ class MenuStore {
         this.isFilterContainerVisible = !this.isFilterContainerVisible;
     }
 
-    toggleSortContainer(){
-        this.isSortContainerVisible = !this.isSortContainerVisible;
-    }
-
     toggleDeleteModal(){ 
         this.isDeleteModalVisible = !this.isDeleteModalVisible;
+    }
+
+    toggleSortMenu() {
+        this.isSortMenuOpen = !this.isSortMenuOpen;
+    }
+
+    closeSortMenu() {
+        this.isSortMenuOpen = false;
     }
 }
 

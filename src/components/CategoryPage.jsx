@@ -5,6 +5,7 @@ import recipeStore from '../stores/RecipeStore';
 import NavBar from './NavBar';
 import Recipes from './Recipes';
 import Pagination from './Pagination';
+import SortMenu from './SortMenu';
 import '../css/CategoryPage.css';
 
 const CategoryPage = observer(() => {
@@ -13,6 +14,7 @@ const CategoryPage = observer(() => {
 
   const handlePageChange = (pageNumber) => {
     recipeStore.setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -33,9 +35,7 @@ const CategoryPage = observer(() => {
           <div className="create-icon">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAABH0lEQVR4nO2UMU4DMRBFZ2tQ2nS7/pOtVlyDBirwWCmg4Aa0JLkMoqMADkMEl0BUSDSJEnllxAqCsraJEZKf5MKyZv7M+GuIMpkNCGO1i0P/pwCoeRsEdUdEBYVT2Bwu17x3lClLCPBiAzUwDVU3wKzNwXg1o1HtG3yoGQvNWBrm4wDxqPgW231IB90JCjChCAph3DoTPZ/V9WCreNPsC9SjE3+I9BD5JvQuuBfjqlJ9Rhr6Zd6mOmU+8n3/FQSYbOqwOyHDfEU7pOj88bejgfto0/Uy5Q8F2DdKgXzZ7d67PhcQi+Qv4E/Tmbps/syEhqsLzXhzy+kpeQHysYAYN8l2gKUj/G5YXVJqxI38hPkgubhFgOvz4XCvvWQyFMcamP72zm23suUAAAAASUVORK5CYII=" />
           </div>
-          <div className="create-icon">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAABCElEQVR4nO2XTQ6CMBCFewJPYNJOyw3cyMata+l05S28gJyHi3AbExL3mkYBw4+0MKSivqSrZvq+zEyZwthfDjpE0ZqFkgZINYjiwPk2iDlKuNmlJVwTIXYucSghK+NIzNETYjKA7jCvIEAURvH4XbwBOD0hMlJzHFEOcnOcC+IYRSsEMK1Vm+bNvUSIPXkJmnoBcD6M5BYsGoBUuEQAo3hcNupv9gCSAsAjlUOf39kAxui7ADB4D8jwAJlddsB07duB1DHA8gq8Y8DZwceoZJTaaAkX1zGOUpzJzP0hRpjjQAlqCB7b51r/Uw5Sb3PfJuzPxIS0o+ctaEPMUHN3iADmH/E7x5akO4ORGxq3GGMKAAAAAElFTkSuQmCC" />
-          </div>
+          <SortMenu />
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { makeObservable, observable, action, computed, runInAction } from 'mobx'
 import { db } from '../firebase';
 import { ref, set, get, remove } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
+import { throttle } from 'lodash';
 
 class RecipeStore {
     recipes = []; // array for all recipes (Firebase and MealDB)
@@ -18,6 +19,8 @@ class RecipeStore {
     };
     currentPage = 1;
     recipesPerPage = 14;
+    sortOption = "titleAsc";
+    recipeCache = {};
 
     constructor(){
         makeObservable(this, {
@@ -28,6 +31,8 @@ class RecipeStore {
             newRecipe: observable,
             currentPage: observable,
             recipesPerPage: observable,
+            sortOption: observable, 
+            recipeCache: observable,
             // action values - functions for recipes
             fetchFirebaseRecipes: action, // fetching Firebase recipes
             fetchRecipesFromMealDB: action, // fetching recipes from MealDB
@@ -45,6 +50,8 @@ class RecipeStore {
             setCurrentPage: action,
             setRecipesPerPage: action,
             paginatedRecipes: computed,
+            setSortOption: action,
+            sortRecipes: action,
         });
     }
 
@@ -80,19 +87,33 @@ class RecipeStore {
             return [];
         }
     };
-    
-    fetchRecipesFromMealDB = async (categoryName) => {
+
+    fetchRecipesFromMealDB = throttle(async (categoryName) => {
+        if(this.recipeCache[categoryName]){
+            return this.recipeCache[categoryName];
+        }
         try {
-            const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoryName}`);
+            const response = await fetch(`/api/json/v1/1/filter.php?c=${categoryName}`);
             const data = await response.json();
-            return data.meals;
+            const basicRecipes = data.meals || [];
+    
+            const detailedRecipesPromises = basicRecipes.map(async recipe => {
+                const detailResponse = await fetch(`/api/json/v1/1/lookup.php?i=${recipe.idMeal}`);
+                const detailData = await detailResponse.json();
+                return detailData.meals[0];
+            });
+    
+            const detailedRecipes = await Promise.all(detailedRecipesPromises);
+            this.recipeCache[categoryName] = detailedRecipes;
+            return detailedRecipes;
         } catch (error) {
             console.error('Error fetching recipes:', error);
             runInAction(() => {
                 this.error = 'Failed to fetch recipes.';
             });
         }
-    }; 
+    }, 5000);
+    
 
     fetchAllRecipes = async (categoryName) => {
         try {
@@ -104,6 +125,7 @@ class RecipeStore {
                     ...firebaseRecipes
                 ];
                 this.recipes = allRecipes;
+                this.sortRecipes();
             });
         } catch (error){
             runInAction(() => {
@@ -115,7 +137,7 @@ class RecipeStore {
     fetchRecipeDetail = async (id) => {
         // find the MealDB recipe with the matching id
         try {
-            const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+            const response = await fetch(`/api/json/v1/1/lookup.php?i=${id}`);
             const data = await response.json();
             console.log('MealDB Recipe Data:', data);
             if(data.meals && data.meals.length > 0) {
@@ -304,6 +326,31 @@ updateNewRecipe = (key, value) => {
         const endIndex = startIndex + this.recipesPerPage;
         return this.recipes.slice(startIndex, endIndex);
     }
+
+    setSortOption(option) {
+        this.sortOption = option;
+        this.sortRecipes();
+    }
+    
+    sortRecipes() {
+        switch (this.sortOption) {
+            case "titleAsc":
+                this.recipes = this.recipes.slice().sort((a, b) => a.strMeal.localeCompare(b.strMeal));
+                break;
+            case "titleDesc":
+                this.recipes = this.recipes.slice().sort((a, b) => b.strMeal.localeCompare(a.strMeal));
+                break;
+            case "countryAsc":
+                this.recipes = this.recipes.slice().sort((a, b) => a.strArea.localeCompare(b.strArea));
+                break;
+            case "countryDesc":
+                this.recipes = this.recipes.slice().sort((a, b) => b.strArea.localeCompare(a.strArea));
+                break;
+            default:
+                break;
+        }
+    }
+    
 }
 
 const recipeStore = new RecipeStore();
