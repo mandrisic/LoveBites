@@ -1,4 +1,4 @@
-import { makeObservable, observable, action, runInAction } from 'mobx';
+import { makeObservable, observable, action, computed, runInAction } from 'mobx';
 import { db } from '../firebase';
 import { ref, set, get, remove } from 'firebase/database';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,6 +16,8 @@ class RecipeStore {
         ingredients: [{ ingredient: '', measure: '' }],
         strInstructions: '', 
     };
+    currentPage = 1;
+    recipesPerPage = 14;
 
     constructor(){
         makeObservable(this, {
@@ -24,6 +26,8 @@ class RecipeStore {
             recipeDetail: observable,
             error: observable,
             newRecipe: observable,
+            currentPage: observable,
+            recipesPerPage: observable,
             // action values - functions for recipes
             fetchFirebaseRecipes: action, // fetching Firebase recipes
             fetchRecipesFromMealDB: action, // fetching recipes from MealDB
@@ -38,6 +42,9 @@ class RecipeStore {
             addIngredient: action,
             updateIngredient: action,
             removeIngredient: action,
+            setCurrentPage: action,
+            setRecipesPerPage: action,
+            paginatedRecipes: computed,
         });
     }
 
@@ -278,7 +285,25 @@ updateNewRecipe = (key, value) => {
         runInAction(() => {
             this.newRecipe.ingredients.splice(index, 1);
         });
-    }   
+    }
+    
+    setCurrentPage = (pageNumber) => {
+        runInAction(() => {
+            this.currentPage = pageNumber;
+        });
+    };
+
+    setRecipesPerPage = (number) => {
+        runInAction(() => {
+            this.recipesPerPage = number;
+        });
+    };
+
+    get paginatedRecipes() {
+        const startIndex = (this.currentPage - 1) * this.recipesPerPage;
+        const endIndex = startIndex + this.recipesPerPage;
+        return this.recipes.slice(startIndex, endIndex);
+    }
 }
 
 const recipeStore = new RecipeStore();

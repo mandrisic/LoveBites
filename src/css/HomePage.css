@@ -1,5 +1,5 @@
 .home {
-    height: 100vh;
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@
 }
 
 .logo {
-    margin-top: -60px;
+    margin-top: -80px;
     width: 320px;
 }
 

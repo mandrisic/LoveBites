@@ -4,13 +4,19 @@ import { observer } from 'mobx-react-lite';
 import recipeStore from '../stores/RecipeStore';
 import NavBar from './NavBar';
 import Recipes from './Recipes';
+import Pagination from './Pagination';
 import '../css/CategoryPage.css';
 
 const CategoryPage = observer(() => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
 
+  const handlePageChange = (pageNumber) => {
+    recipeStore.setCurrentPage(pageNumber);
+  };
+
   useEffect(() => {
+    recipeStore.setCurrentPage(1);
     recipeStore.fetchAllRecipes(categoryName);
   }, [categoryName]);
 
@@ -35,7 +41,11 @@ const CategoryPage = observer(() => {
 
       {recipeStore.error && <p>{recipeStore.error}</p>}
         {!recipeStore.error && <Recipes categoryName={categoryName}/>}
-
+        <Pagination
+        currentPage={recipeStore.currentPage}
+        totalPages={Math.ceil(recipeStore.recipes.length / recipeStore.recipesPerPage)}
+        onPageChange={handlePageChange}
+      />
     </div>
     </>
   )
