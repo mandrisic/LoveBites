@@ -156,11 +156,11 @@ const AddRecipeForm = observer(() => {
                             }}
                             >
                                 <MenuItem value="" disabled>Select category</MenuItem>
-                                    {categoryStore.categories.map((category) => (
-                                        <MenuItem key={category.strCategory} value={category.strCategory}>
-                                            {category.strCategory}
-                                        </MenuItem>
-                                    ))}
+                                {categoryStore.categories.map((category) => (
+                                    <MenuItem key={category.strCategory} value={category.strCategory}>
+                                        {category.strCategory}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
 
@@ -194,17 +194,17 @@ const AddRecipeForm = observer(() => {
                                 }}
                                 >
                                 <MenuItem value="" disabled>Select area</MenuItem>
-                                    {categoryStore.areas.map((area) => (
-                                        <MenuItem key={area.strArea} value={area.strArea}>
-                                            {area.strArea}
-                                        </MenuItem>
-                                    ))}
+                                {categoryStore.areas.map((area) => (
+                                    <MenuItem key={area} value={area}>
+                                        {area}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </div>
 
                     {newRecipe.ingredients.map((ingredientObj, index) => (
-                        <div key={index} className='ingredients-container'>
+                        <div key={`ingredient-${index}`} className='ingredients-container'>
                             <TextField
                                 label={`Ingredient ${index + 1}`}
                                 value={ingredientObj.ingredient}

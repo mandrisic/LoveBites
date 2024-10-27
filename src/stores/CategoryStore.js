@@ -12,11 +12,13 @@ class CategoryStore {
             error: observable,
             fetchCategories: action,
             fetchAreas: action,
+            fetchAreasForFiltering: action
         });
     }
 
     fetchCategories = async () => {
         try {
+            this.error = ''; // Clear previous errors
             const response = await fetch('/api/json/v1/1/categories.php');
             const data = await response.json();
             runInAction(() => {
@@ -30,11 +32,25 @@ class CategoryStore {
     }
 
     fetchAreas = async () => {
+    try {
+        const response = await fetch('/api/json/v1/1/list.php?a=list');
+        const data = await response.json();
+        runInAction(() => {
+            this.areas = data.meals.map(meal => meal.strArea);
+        });
+    } catch (error) {
+        runInAction(() => {
+            this.error = 'Failed to fetch areas.';
+        });
+    }
+}
+
+    fetchAreasForFiltering = async () => {
         try {
             const response = await fetch('/api/json/v1/1/list.php?a=list');
             const data = await response.json();
             runInAction(() => {
-                this.areas = data.meals;
+                this.areas = data.meals.map(meal => meal.strArea);
             });
         } catch (error) {
             runInAction(() => {

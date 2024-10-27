@@ -30,13 +30,23 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     return pages;
   };
 
+  if (totalPages <= 1) return null;
+
   return (
     <div className="pagination">
-      <button className="pagination-btn" onClick={handlePrevPage} disabled={currentPage === 1}>
+      <button 
+        className="pagination-btn" 
+        onClick={handlePrevPage} 
+        disabled={currentPage === 1}
+      >
         Previous
       </button>
       {renderPageNumbers()}
-      <button className="pagination-btn" onClick={handleNextPage} disabled={currentPage === totalPages}>
+      <button 
+        className="pagination-btn" 
+        onClick={handleNextPage} 
+        disabled={currentPage === totalPages}
+      >
         Next
       </button>
     </div>

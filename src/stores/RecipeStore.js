@@ -17,10 +17,17 @@ class RecipeStore {
         ingredients: [{ ingredient: '', measure: '' }],
         strInstructions: '', 
     };
+    // pagination
     currentPage = 1;
     recipesPerPage = 14;
+    totalPages = 0;
+    // sorting
     sortOption = "titleAsc";
+    // cache
     recipeCache = {};
+    // filtering
+    selectedAreas = [];
+    tempSelectedAreas = []; 
 
     constructor(){
         makeObservable(this, {
@@ -31,8 +38,11 @@ class RecipeStore {
             newRecipe: observable,
             currentPage: observable,
             recipesPerPage: observable,
+            totalPages: observable,
             sortOption: observable, 
             recipeCache: observable,
+            selectedAreas: observable,
+            tempSelectedAreas: observable,
             // action values - functions for recipes
             fetchFirebaseRecipes: action, // fetching Firebase recipes
             fetchRecipesFromMealDB: action, // fetching recipes from MealDB
@@ -50,8 +60,14 @@ class RecipeStore {
             setCurrentPage: action,
             setRecipesPerPage: action,
             paginatedRecipes: computed,
+            calculatePagination: action,
             setSortOption: action,
             sortRecipes: action,
+            setCategory: action,
+            setTempSelectedAreas: action,
+            applyFilters: action,
+            resetFilters: action,
+            filteredRecipes: computed,
         });
     }
 
@@ -321,10 +337,14 @@ updateNewRecipe = (key, value) => {
         });
     };
 
+    calculatePagination(totalItems = this.filteredRecipes.length) {
+    this.totalPages = Math.ceil(totalItems / this.recipesPerPage);
+}
+
     get paginatedRecipes() {
         const startIndex = (this.currentPage - 1) * this.recipesPerPage;
         const endIndex = startIndex + this.recipesPerPage;
-        return this.recipes.slice(startIndex, endIndex);
+        return this.filteredRecipes.slice(startIndex, endIndex);
     }
 
     setSortOption(option) {
@@ -350,6 +370,47 @@ updateNewRecipe = (key, value) => {
                 break;
         }
     }
+
+    applyFilters = () => {
+        this.selectedAreas = [...this.tempSelectedAreas];
+        this.tempSelectedAreas = [];
+        this.currentPage = 1; // resetira na prvu stranicu nakon filtriranja
+        this.calculatePagination(); // ažurira paginaciju
+    };
+
+    setCategory(category) {
+        // Kada se promijeni kategorija, resetuj filtere i učitaj nove recepte
+        this.selectedCategory = category;
+        this.tempSelectedAreas = [];
+        this.selectedAreas = [];
+        this.currentPage = 1;
+        this.fetchAllRecipes(category);
+        this.calculatePagination();
+    }
+
+    setTempSelectedAreas(area) {
+        if (this.tempSelectedAreas.includes(area)) {
+            this.tempSelectedAreas = this.tempSelectedAreas.filter(a => a !== area);
+        } else {
+            this.tempSelectedAreas.push(area);
+        }
+    }
+    
+    // Computed koji vraća recepte filtrirane po odabranim zemljama
+    get filteredRecipes() {
+        const filtered = this.selectedAreas.length === 0 
+            ? this.recipes 
+            : this.recipes.filter(recipe => this.selectedAreas.includes(recipe.strArea));
+        this.calculatePagination(filtered.length); // proslijedimo dužinu filtriranih recepata
+        return filtered;
+    }
+
+    resetFilters = () => {
+        this.selectedAreas = [];
+        this.tempSelectedAreas = [];
+        this.currentPage = 1;
+        this.calculatePagination(); // ažurira paginaciju nakon reseta filtera
+    };
     
 }
 

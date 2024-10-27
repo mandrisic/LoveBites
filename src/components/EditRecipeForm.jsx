@@ -152,11 +152,11 @@ const EditRecipeForm = observer(() => {
 
                     <FormControl fullWidth variant="outlined">
                         <Select
-                            name="area"
-                            value={recipeStore.newRecipe.strArea || ''}
-                            onChange={(e) => recipeStore.updateNewRecipe('strArea', e.target.value)}
-                            required
-                            displayEmpty
+                             name="area"
+                             value={categoryStore.areas.includes(recipeStore.newRecipe.strArea) ? recipeStore.newRecipe.strArea : ''}
+                             onChange={(e) => recipeStore.updateNewRecipe('strArea', e.target.value)}
+                             required
+                             displayEmpty
                             sx={{
                                 ...inputStyle,
                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -179,10 +179,10 @@ const EditRecipeForm = observer(() => {
                             }}
                         >
                             <MenuItem value="" disabled>Select area</MenuItem>
-                            {categoryStore.areas.map((area) => (
-                                <MenuItem key={area.strArea} value={area.strArea}>
-                                    {area.strArea}
-                                </MenuItem>
+                                {categoryStore.areas.map((area) => (
+                                    <MenuItem key={area} value={area}>
+                                        {area}
+                                    </MenuItem>
                             ))}
                         </Select>
                     </FormControl>

@@ -69,12 +69,10 @@ runInAction(() => {
     }
   }
 
-  const hasSteps = recipeDetail.strInstructions 
-  ? recipeDetail.strInstructions.toLowerCase().includes('step') 
-  : false;
+  const hasSteps = Boolean(recipeDetail.strInstructions);
 
-  const instructions = recipeDetail.strInstructions 
-  ? recipeDetail.strInstructions.split(/(Step \d+|STEP \d+)/g).filter(step => step.trim() !== '')
+  const instructions = recipeDetail.strInstructions
+  ? recipeDetail.strInstructions.split(/\r?\n/g).filter(step => step.trim() !== '')
   : [];
 
   const toggleMenu = () => {
@@ -145,25 +143,21 @@ runInAction(() => {
           </div>
         </div>
         <h3>Instructions:</h3>
-            {hasSteps ? (
-            <ul className='instructions-list'>
-              {instructions.map((step, index) => {
-                if (step.includes('STEP')) {
-                  const nextStep = instructions[index + 1] || '';
-                  return (
-                    <li className='list-line' key={index}>
-                      <strong>{step}:</strong> {nextStep.trim()}
-                    </li>
-                  );
-                }
-                return null;
-              })}
-            </ul>
-            ) : (
-            <ul className='instructions-list'>
-              <li className='list-line'>{recipeDetail.strInstructions}</li>
-            </ul>
-            )}
+{instructions.length > 0 ? (
+  <ul className='instructions-list'>
+  {instructions.length > 0 ? (
+    instructions.map((instruction, index) => (
+      <li key={index} className='list-line'>{instruction}</li>
+    ))
+  ) : (
+    <li className='list-line'>{recipeDetail.strInstructions}</li>
+  )}
+</ul>
+) : (
+  <ul className='instructions-list'>
+    <li className='list-line'>{recipeDetail.strInstructions}</li>
+  </ul>
+)}
       </div>
 
       <div className={`menu-overlay ${menuStore.isOptionsContainerVisible ? 'visible' : ''}`} onClick={toggleMenu}></div>
