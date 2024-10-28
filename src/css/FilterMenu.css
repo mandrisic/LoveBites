@@ -46,7 +46,7 @@
   .filter-menu button {
     margin: 20px auto;
     padding: 5px 10px;
-    background-color: #007BFF;
+    background-color: #542221;
     color: white;
     border: none;
     border-radius: 4px;
@@ -54,6 +54,6 @@
   }
   
   .filter-menu button:hover {
-    background-color: #0056b3;
+    background-color: #765756;
   }
   

@@ -54,7 +54,7 @@
     text-align: center;
     padding: 10px;
     border-radius: 40px;
-    background-color: #ede2d3;
+    background-color: #f5edeb;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
@@ -75,7 +75,7 @@
     height: 20px;
     border-radius: 15px;
     border: 2px solid #d19989;
-    background-color: #e9ccc4;
+    background-color: #f0d8d1;
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -121,7 +121,7 @@
 }
 
 .ingredient-item {
-    background-color: #e9ccc4;
+    background-color: #f9ebe6;
     border: 2px solid #debcb2;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     min-width: 80px;
@@ -170,7 +170,7 @@
     transform: translateX(-50%) translateY(100%); /* Start izvan viewporta */
     width: 90%;
     height: 270px;
-    background-color: #ede2d3;
+    background-color: #f5edeb;
     border-radius: 20px 20px 0px 0px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     opacity: 0;

@@ -24,35 +24,37 @@ const AddRecipeForm = observer(() => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Submitting recipe:', recipeStore.newRecipe);
-
-        // check if url is valid
+    
+        // Provjera ispravnosti URL-a slike
         const urlRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|svg|gif))$/;
-         if (!urlRegex.test(newRecipe.strMealThumb)) {
-        console.error('Invalid image URL');
-        alert('Please enter a valid image URL ending with .png, .jpg, .jpeg, .svg or .gif');
-        return;
-    }
-
-    // check if all required fields have value
-    if (!newRecipe.strMeal || !newRecipe.strCategory || !newRecipe.strArea || newRecipe.ingredients.length === 0) {
-        console.error('All required fields must be filled.');
-        alert('Please fill out all required fields: name, category, area, and at least one ingredient.');
-        return;
-    }
-
-    const isValidIngredient = (ingredient, measure) => {
-        return ingredient.trim() !== "" && measure.trim() !== "";
-      };
-      
-      const invalidIngredients = newRecipe.ingredients.some(({ ingredient, measure }) => 
-          !isValidIngredient(ingredient, measure)
-      );
-
-    if (invalidIngredients) {
-        alert('All ingredients should also have a written measure.');
-        return;
-    }
+        if (!urlRegex.test(newRecipe.strMealThumb)) {
+            console.error('Invalid image URL');
+            alert('Please enter a valid image URL ending with .png, .jpg, .jpeg, .svg or .gif');
+            return;
+        }
+    
+        // Provjera jesu li sva obavezna polja popunjena
+        if (!newRecipe.strMeal || !newRecipe.strCategory || !newRecipe.strArea || newRecipe.ingredients.length === 0) {
+            console.error('All required fields must be filled.');
+            alert('Please fill out all required fields: name, category, area, and at least one ingredient.');
+            return;
+        }
+    
+        // Provjera jesu li svi sastojci ispravno popunjeni
+        const isValidIngredient = (ingredient, measure) => {
+            return ingredient.trim() !== "" && measure.trim() !== "";
+        };
+        const invalidIngredients = newRecipe.ingredients.some(({ ingredient, measure }) => 
+            !isValidIngredient(ingredient, measure)
+        );
+    
+        if (invalidIngredients) {
+            alert('All ingredients should also have a written measure.');
+            return;
+        }
+    
         addRecipe();
+        closeForm();
     };
 
     const handleInputChange = (index, field, value) => {
@@ -271,7 +273,7 @@ const AddRecipeForm = observer(() => {
                           }}
                     />
                     
-                    <Button type="submit" onClick={closeForm} 
+                    <Button type="submit"
                     variant="contained" 
                     sx={{ 
                         backgroundColor: '#542221', 
