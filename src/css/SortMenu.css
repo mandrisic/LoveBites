@@ -1,13 +1,13 @@
 .sort-menu {
     position: absolute;
-    top: 182px; /* prilagodi prema poziciji ikone */
+    top: 182px;
     right: 42px;
     border-radius: 10px;
-    background-color: #ede2d3;
+    background-color: #f5edeb;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     background-color: white;
     border: 1px solid #ccc;
-    z-index: 1000;
+    z-index: 900;
     padding: 5px 14px 10px 14px;
     display: flex;
     flex-direction: column;
@@ -24,3 +24,53 @@
     color: #542221;
     margin: 5px 0;
 }
+
+@media screen and (max-width: 417px) {
+    .sort-menu {
+        top: 177px;
+        right: 22px;
+    }
+
+    .sort-menu p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 352px) {
+    .sort-menu {
+        top: 177px;
+        right: 13px;
+    }
+
+    .sort-menu p {
+        font-size: 12px;
+    }
+    
+    .sort-menu img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .sort-menu {
+        top: 135px;
+        right: 80px;
+        padding: 20px;
+    }
+
+    .sort-menu p {
+        font-size: 18px;
+    }
+
+    .sort-menu img {
+        margin-bottom: 10px;
+    }
+  }
+
+  @media screen and (min-width: 1440px) {
+    .sort-menu {
+        top: 141px;
+        right: 110px;
+    }
+  }

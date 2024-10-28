@@ -25,6 +25,7 @@
 .closeBtn {
     position: sticky;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .select-elements, .ingredients-container {

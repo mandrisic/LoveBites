@@ -1,13 +1,12 @@
 .filter-menu {
     position: absolute;
-    top: 182px; /* prilagodi prema poziciji ikone */
-    right: 92px; /* malo dalje od ikone sort, prilagodi prema potrebi */
+    top: 182px;
+    right: 92px;
     border-radius: 10px;
-    background-color: #ede2d3;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     background-color: white;
     border: 1px solid #ccc;
-    z-index: 1000;
+    z-index: 900;
     padding: 5px 14px 10px 14px;
     display: flex;
     flex-direction: column;
@@ -56,4 +55,80 @@
   .filter-menu button:hover {
     background-color: #765756;
   }
+
+  @media screen and (max-width: 417px) {
+    .filter-menu {
+      right: 69px;
+      top: 177px;
+      width: 220px;
+    }
+
+    .filter-menu h2 {
+      margin-top: 30px;
+      font-size: 22px;
+    }
+
+    .area {
+      font-size: 14px;
+      flex: 1 1 48%;
+    }
+
+    .filter-menu button {
+      font-size: 14px;
+    }
+}
   
+  @media screen and (max-width: 352px) {
+    .filter-menu h2 {
+      font-size: 18px;
+    }
+
+    .filter-menu {
+      right: 56px;
+      top: 177px;
+      width: 172px;
+    }
+
+    .area {
+      font-size: 12px;
+    }
+
+    .country-options {
+      gap: 2px;
+      padding: 5px;
+    }
+
+    .filter-menu button {
+      font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+  .filter-menu {
+    right: 132px;
+    top: 135px;
+    width: 400px;
+  }
+
+  .filter-menu h2 {
+    margin-top: 30px;
+  }
+
+  .area {
+    font-size: 18px;
+    flex: 1 1 32%;
+  }
+
+  .filter-menu button {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .filter-menu {
+      top: 141px;
+      right: 162px;
+  }
+}

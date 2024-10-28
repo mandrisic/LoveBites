@@ -1,14 +1,21 @@
+body {
+    background-color: #f5edeb;
+}
+
 .details-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    background-color: #f0d8d1;
+    width: 100%;
+    height: 100%;
+    background-color: #f5edeb;
+    overflow: hidden;
 }
 
 .details-picture {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: fit-content;
 }
 
@@ -85,7 +92,7 @@
     margin-bottom: 5px;
 }
 
-.ingredients-container {
+.ing-container {
     width: 90%;
     display: flex;
     align-items: center;
@@ -99,7 +106,7 @@
     -ms-overflow-style: none; 
 }
 
-.ingredients-container::-webkit-scrollbar {
+.ing-container::-webkit-scrollbar {
     display: none;
 }
 
@@ -135,7 +142,7 @@
 }
 
 .ingredient-item:first-child {
-    margin-left: 5px; /* Pomakni prvi element malo u desno */
+    margin-left: 5px;
 }
 
 .ingredient-img {
@@ -167,14 +174,14 @@
     position: fixed;
     bottom: 0;
     left: 50%;
-    transform: translateX(-50%) translateY(100%); /* Start izvan viewporta */
+    transform: translateX(-50%) translateY(100%);
     width: 90%;
     height: 270px;
     background-color: #f5edeb;
     border-radius: 20px 20px 0px 0px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     opacity: 0;
-    transition: transform 0.4s ease, opacity 0.4s ease; /* Animacija otvaranja */
+    transition: transform 0.4s ease, opacity 0.4s ease;
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -201,6 +208,7 @@
 
 .options-menu img {
     padding-top: 15px;
+    cursor: pointer;
 }
 
 .menu-overlay {
@@ -209,15 +217,141 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Tamniji efekt */
+    background-color: rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity 0.3s ease; /* Animacija postepene pojave */
-    z-index: 999; /* Iza izbornika, ali ispred sadržaja */
-    pointer-events: none; /* Neće blokirati klikove dok je zatvoreno */
+    transition: opacity 0.3s ease;
+    z-index: 999;
+    pointer-events: none;
   }
   
-  /* Kada je vidljiv */
   .menu-overlay.visible {
     opacity: 1;
-    pointer-events: all; /* Sada blokira klikove na pozadinu */
+    pointer-events: all; 
   }
+
+@media screen and (max-width: 417px) {
+    .details h2 {
+        font-size: 22px;
+        padding: 0 5px;
+    }
+
+    .options-menu {
+        height: 240px;
+    }
+
+    .options-menu img {
+        padding-top: 10px;
+        width: 32px;
+        height: auto;
+    }
+
+    .options-menu ul {
+        padding: 5px;
+        line-height: 30px;
+        font-size: 18px;
+        margin-bottom: -5px;
+    }
+}
+
+@media screen and (max-width: 356px) {
+    .details h2 {
+        font-size: 22px;
+    }
+    
+    .key-word {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .list-line {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .options-menu {
+        height: 220px;
+    }
+
+    .options-menu img {
+        width: 30px;
+    }
+
+    .options-menu ul {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .details-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .details {
+        margin: 0px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 0px;
+        background-color: #f5edeb;
+        box-shadow: none;
+    }
+
+    .details-picture {
+        max-width: max-content;
+        width: 30vw;
+        height: fit-content;
+    }
+
+    .details-img {
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 20px;
+    }
+
+    .details h2 {
+        padding: 10px;
+        font-size: 28px;
+    }
+    
+    .details h3 {
+        padding: 10px;
+        font-size: 24px;
+    }
+
+    .ing-container {
+        position: static;
+        overflow-x: visible;
+        height: fit-content;
+        justify-content: center;
+    }
+
+    .ingredients-list {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        white-space: normal;
+        padding: 0px;
+        position: static;
+        padding-inline-start: 0px;
+        height: 100%;
+    }
+    
+    .ingredient-item {
+        border: 2px solid #d19989;
+        background-color: #f0d8d1;
+        height: 100%;
+    }
+
+    .instructions-list {
+        list-style-type: none;
+        width: 88%;
+        font-size: 18px;
+        padding-bottom: 10px;
+    }
+    
+    .list-line {
+        padding: 10px;
+        text-align: justify;
+    }
+}

@@ -4,6 +4,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #f5edeb;
+}
+
+body {
+    background-color: #f5edeb;
 }
 
 .category-container {
@@ -27,7 +32,7 @@
 
 .categoryName {
     margin: 5px 0px;
-    font-size: 30px;
+    font-size: 28px;
     text-decoration: 3px solid underline #d19989;
 }
 
@@ -45,7 +50,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 .back img {
@@ -54,6 +58,73 @@
 }
 
 @media screen and (max-width: 417px) {
+    .category-container {
+        width: 88%;
+    }
+
+    .categoryName {
+        font-size: 24px;
+    }
+
+    .back {
+        width: 24px;
+        height: 24px;
+    }
     
-    
+    .back img {
+        width: 18px;
+    }
+
+    .create-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .create-icon img {
+        width: 24px;
+        height: auto;
+    }
+
+    .navbar-title {
+        font-size: 20px;
+        margin-top: 30px;
+    }
+
+    .dog {
+        position: absolute;
+        top: -6.9px;
+        right: -10px;
+        width: 200px;
+        z-index: -2;
+        clip-path: inset(0 0 21.5% 0);
+        overflow: hidden;
+    }
+}
+
+@media screen and (max-width: 352px) {
+    .category-container {
+        width: 92%;
+    }
+
+    .categoryName {
+        font-size: 22px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .category-container {
+        width: 86%;
+        padding: 10px;
+        margin-top: 120px;
+    }
+
+    .category-choices {
+        padding: 0px 20px;
+    }
+    .icons-container {
+        display: flex;
+        gap: 10px;
+        margin-right: 30px;
+    }
 }

@@ -7,7 +7,7 @@
   }
   
   .pagination-btn {
-    background-color: #f0f0f0;
+    background-color: #ebdfdf;
     border: none;
     color: #542221;
     padding: 10px;
@@ -22,8 +22,10 @@
   }
   
   .pagination-btn:disabled {
-    background-color: #eee;
+    background-color: #f9f4f4;
     cursor: not-allowed;
+    color: #aa8a89;
+    text-decoration: .5px solid line-through white;
   }
   
   .pagination-btn.active {

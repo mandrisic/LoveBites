@@ -1,7 +1,7 @@
 .searchbar {
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    width: 75%;
+    width: 80%;
     height: 40px;
     border-radius: 20px;
     padding: 0px 15px;
@@ -10,6 +10,12 @@
     align-self: center;
     justify-content: space-between;
     background-color: #f9f5ef;
+    grid-area: search;
+}
+
+.searchbar img {
+    width: 26px;
+    height: auto;
 }
 
 .search-input {
@@ -46,4 +52,15 @@
 
 .search-result-item:hover {
     background-color: #e4c1b8;
+}
+
+@media screen and (max-width: 356px) {
+    .search-result-item {
+        padding: 5px 20px;
+        font-size: 12px;
+    }
+
+    .searchbar img {
+        width: 20px;
+    }
 }
