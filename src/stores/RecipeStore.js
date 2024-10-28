@@ -28,6 +28,9 @@ class RecipeStore {
     // filtering
     selectedAreas = [];
     tempSelectedAreas = []; 
+    // search
+    searchTerm = '';
+    searchResults = [];
 
     constructor(){
         makeObservable(this, {
@@ -43,6 +46,8 @@ class RecipeStore {
             recipeCache: observable,
             selectedAreas: observable,
             tempSelectedAreas: observable,
+            searchTerm: observable,
+            searchResults: observable,
             // action values - functions for recipes
             fetchFirebaseRecipes: action, // fetching Firebase recipes
             fetchRecipesFromMealDB: action, // fetching recipes from MealDB
@@ -68,6 +73,10 @@ class RecipeStore {
             applyFilters: action,
             resetFilters: action,
             filteredRecipes: computed,
+            setSearchTerm: action,
+            filterRecipesBySearch: action,
+            searchResultsDisplay: computed,
+            resetSearch: action,
         });
     }
 
@@ -374,12 +383,11 @@ updateNewRecipe = (key, value) => {
     applyFilters = () => {
         this.selectedAreas = [...this.tempSelectedAreas];
         this.tempSelectedAreas = [];
-        this.currentPage = 1; // resetira na prvu stranicu nakon filtriranja
-        this.calculatePagination(); // ažurira paginaciju
+        this.currentPage = 1;
+        this.calculatePagination();
     };
 
     setCategory(category) {
-        // Kada se promijeni kategorija, resetuj filtere i učitaj nove recepte
         this.selectedCategory = category;
         this.tempSelectedAreas = [];
         this.selectedAreas = [];
@@ -396,12 +404,11 @@ updateNewRecipe = (key, value) => {
         }
     }
     
-    // Computed koji vraća recepte filtrirane po odabranim zemljama
     get filteredRecipes() {
         const filtered = this.selectedAreas.length === 0 
             ? this.recipes 
             : this.recipes.filter(recipe => this.selectedAreas.includes(recipe.strArea));
-        this.calculatePagination(filtered.length); // proslijedimo dužinu filtriranih recepata
+        this.calculatePagination(filtered.length); 
         return filtered;
     }
 
@@ -409,7 +416,44 @@ updateNewRecipe = (key, value) => {
         this.selectedAreas = [];
         this.tempSelectedAreas = [];
         this.currentPage = 1;
-        this.calculatePagination(); // ažurira paginaciju nakon reseta filtera
+        this.calculatePagination();
+    };
+
+    setSearchTerm(term) {
+        this.searchTerm = term;
+        this.filterRecipesBySearch();
+    }
+
+    filterRecipesBySearch() {
+        const lowerCaseTerm = this.searchTerm.toLowerCase();
+        
+        if (!lowerCaseTerm) {
+            this.searchResults = [];
+            return;
+        }
+
+        let matchedRecipes = this.recipes.filter(recipe => 
+            recipe.strMeal.toLowerCase().startsWith(lowerCaseTerm)
+        );
+
+        if (matchedRecipes.length < 10) {
+            const additionalRecipes = this.recipes.filter(recipe => 
+                recipe.strMeal.toLowerCase().includes(lowerCaseTerm) &&
+                !matchedRecipes.includes(recipe)
+            );
+            matchedRecipes = matchedRecipes.concat(additionalRecipes).slice(0, 10);
+        }
+
+        this.searchResults = matchedRecipes;
+    }
+
+    get searchResultsDisplay() {
+        return this.searchResults.length > 0 ? this.searchResults : ["No recipe matches your search"];
+    }
+
+    resetSearch = () => {
+        this.searchTerm = '';
+        this.searchResults = [];
     };
     
 }

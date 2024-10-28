@@ -25,7 +25,6 @@ const AddRecipeForm = observer(() => {
         e.preventDefault();
         console.log('Submitting recipe:', recipeStore.newRecipe);
     
-        // Provjera ispravnosti URL-a slike
         const urlRegex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|svg|gif))$/;
         if (!urlRegex.test(newRecipe.strMealThumb)) {
             console.error('Invalid image URL');
@@ -33,14 +32,12 @@ const AddRecipeForm = observer(() => {
             return;
         }
     
-        // Provjera jesu li sva obavezna polja popunjena
         if (!newRecipe.strMeal || !newRecipe.strCategory || !newRecipe.strArea || newRecipe.ingredients.length === 0) {
             console.error('All required fields must be filled.');
             alert('Please fill out all required fields: name, category, area, and at least one ingredient.');
             return;
         }
     
-        // Provjera jesu li svi sastojci ispravno popunjeni
         const isValidIngredient = (ingredient, measure) => {
             return ingredient.trim() !== "" && measure.trim() !== "";
         };
