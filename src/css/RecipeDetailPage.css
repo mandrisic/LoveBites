@@ -1,7 +1,3 @@
-body {
-    background-color: #f5edeb;
-}
-
 .details-container {
     display: flex;
     flex-direction: column;
@@ -9,7 +5,7 @@ body {
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: #f5edeb;
+    background-color: #e4c1b8;
     overflow: hidden;
 }
 
@@ -286,6 +282,7 @@ body {
         display: flex;
         flex-direction: column;
         width: 100%;
+        background-color: #f5edeb;
     }
 
     .details {
