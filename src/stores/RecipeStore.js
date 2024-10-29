@@ -23,8 +23,6 @@ class RecipeStore {
     totalPages = 0;
     // sorting
     sortOption = "titleAsc";
-    // cache
-    recipeCache = {};
     // filtering
     selectedAreas = [];
     tempSelectedAreas = []; 
@@ -38,21 +36,19 @@ class RecipeStore {
             recipes: observable,
             recipeDetail: observable,
             error: observable,
+            setRecipeDetail: observable,
             newRecipe: observable,
             currentPage: observable,
             recipesPerPage: observable,
             totalPages: observable,
             sortOption: observable, 
-            recipeCache: observable,
             selectedAreas: observable,
             tempSelectedAreas: observable,
             searchTerm: observable,
             searchResults: observable,
             // action values - functions for recipes
             fetchFirebaseRecipes: action, // fetching Firebase recipes
-            fetchRecipesFromMealDB: action, // fetching recipes from MealDB
             fetchAllRecipes: action, // fetching all the recipes of a selected category
-            fetchRecipeDetail: action, // fetching the data from a selected recipe
             fetchFirebaseRecipeDetail: action, // also, but from Firebase
             addRecipe: action, // creating a recipe and adding it to the array
             resetNewRecipe: action, // resets the state for new recipe fields
@@ -111,78 +107,23 @@ class RecipeStore {
         console.log('Error fetching Firebase recipes:', error);
             return [];
         }
-    };
+    };   
 
-    fetchRecipesFromMealDB = throttle(async (categoryName) => {
-        if(this.recipeCache[categoryName]){
-            return this.recipeCache[categoryName];
-        }
+    fetchAllRecipes = async (categoryName) => {
         try {
-            const response = await fetch(`/api/json/v1/1/filter.php?c=${categoryName}`);
-            const data = await response.json();
-            const basicRecipes = data.meals || [];
-    
-            const detailedRecipesPromises = basicRecipes.map(async recipe => {
-                const detailResponse = await fetch(`/api/json/v1/1/lookup.php?i=${recipe.idMeal}`);
-                const detailData = await detailResponse.json();
-                return detailData.meals[0];
+            const firebaseRecipes = await this.fetchFirebaseRecipes(categoryName);
+            
+            runInAction(() => {
+                this.recipes = firebaseRecipes;
+                this.sortRecipes();
             });
-    
-            const detailedRecipes = await Promise.all(detailedRecipesPromises);
-            this.recipeCache[categoryName] = detailedRecipes;
-            return detailedRecipes;
         } catch (error) {
-            console.error('Error fetching recipes:', error);
             runInAction(() => {
                 this.error = 'Failed to fetch recipes.';
             });
         }
-    }, 5000);
-    
-
-    fetchAllRecipes = async (categoryName) => {
-        try {
-            const apiRecipes = await this.fetchRecipesFromMealDB(categoryName);
-            const firebaseRecipes = await this.fetchFirebaseRecipes(categoryName);
-            runInAction(() => {
-                const allRecipes = [
-                    ...apiRecipes,
-                    ...firebaseRecipes
-                ];
-                this.recipes = allRecipes;
-                this.sortRecipes();
-            });
-        } catch (error){
-            runInAction(() => {
-                this.error = 'Failed to combine recipes.';
-            });
-        }
-    }
-
-    fetchRecipeDetail = async (id) => {
-        // find the MealDB recipe with the matching id
-        try {
-            const response = await fetch(`/api/json/v1/1/lookup.php?i=${id}`);
-            const data = await response.json();
-            console.log('MealDB Recipe Data:', data);
-            if(data.meals && data.meals.length > 0) {
-                const recipe = data.meals[0]; // fetch the first and only recipe that matches the id
-                runInAction(() => {
-                this.recipeDetail = recipe;
-                console.log('MealDB Recipe id:', recipe.idMeal);
-            });
-            } else {
-            console.log('No recipe found for API ID:', id);
-                runInAction(() => {
-                    this.recipeDetail = null;
-                });
-            }
-        } catch (error) {
-            runInAction(() => {
-                this.error = 'Failed to fetch recipe details.';
-            });
-        }
     };
+    
 
     fetchFirebaseRecipeDetail = async (id) => {
         try {
@@ -216,6 +157,10 @@ class RecipeStore {
             });
         }
     };
+
+    setRecipeDetail(recipe) {
+        this.recipeDetail = recipe;
+      }
     
    addRecipe = async () => {
     try {

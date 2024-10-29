@@ -25,17 +25,14 @@ if (categoryName) {
   };
 
 useEffect(() => {
-  const recipeExists = recipeStore.recipeDetail && recipeStore.recipeDetail.idMeal === id;
-if (!recipeExists) {
-    const recipe = recipeStore.recipes.find(recipe => recipe.idMeal === id);
-    if (recipe) {
-        if (id.length > 8) {
-            recipeStore.fetchFirebaseRecipeDetail(id);
-        } else {
-            recipeStore.fetchRecipeDetail(id);
-        }
-    }
-}
+  const recipe = recipeStore.recipes.find(recipe => recipe.idMeal === id);
+  if (recipe) {
+    recipeStore.setRecipeDetail(recipe);
+  } else {
+    runInAction(() => {
+      recipeStore.error = 'Recipe not found';
+    });
+  }
 runInAction(() => {
   menuStore.isOptionsContainerVisible = false;
 });
@@ -141,21 +138,21 @@ runInAction(() => {
           </div>
         </div>
         <h3>Instructions:</h3>
-{instructions.length > 0 ? (
-  <ul className='instructions-list'>
-  {instructions.length > 0 ? (
-    instructions.map((instruction, index) => (
-      <li key={index} className='list-line'>{instruction}</li>
-    ))
-  ) : (
-    <li className='list-line'>{recipeDetail.strInstructions}</li>
-  )}
-</ul>
-) : (
-  <ul className='instructions-list'>
-    <li className='list-line'>{recipeDetail.strInstructions}</li>
-  </ul>
-)}
+        {instructions.length > 0 ? (
+          <ul className='instructions-list'>
+          {instructions.length > 0 ? (
+            instructions.map((instruction, index) => (
+              <li key={index} className='list-line'>{instruction}</li>
+            ))
+          ) : (
+            <li className='list-line'>{recipeDetail.strInstructions}</li>
+          )}
+        </ul>
+        ) : (
+          <ul className='instructions-list'>
+            <li className='list-line'>{recipeDetail.strInstructions}</li>
+          </ul>
+        )}
       </div>
 
       <div className={`menu-overlay ${menuStore.isOptionsContainerVisible ? 'visible' : ''}`} onClick={toggleMenu}></div>
